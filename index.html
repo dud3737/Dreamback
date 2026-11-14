@@ -89,6 +89,22 @@
     font-size: clamp(17px, 1.6vw, 22px); line-height: 1.4; font-weight: 500;
     text-shadow: 0 1px 14px rgba(42, 27, 51, 0.7);
   }
+  .strap-row { display: flex; align-items: center; gap: 10px; }
+  .info {
+    width: 44px; height: 44px; flex: none; margin: -6px 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 0; padding: 0; background: transparent; cursor: pointer;
+    color: var(--milk);
+  }
+  .info span {
+    width: 30px; height: 30px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1.5px solid rgba(251, 246, 250, 0.7);
+    background: rgba(42, 27, 51, 0.62);
+    font: italic 600 18px/1 Georgia, 'Times New Roman', serif;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .info:hover span { background: var(--haze); color: var(--plum); border-color: var(--haze); }
   .place {
     margin: -6px 0 0;
     font-size: clamp(15px, 1.3vw, 18px); line-height: 1.4; font-weight: 300;
@@ -139,6 +155,17 @@
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .sheet, .scrim { animation: none; } }
 
+  .panel.center { justify-content: center; align-items: center; padding: 24px; }
+  .panel.center .sheet {
+    height: auto; max-height: 100%; max-width: 520px; border-radius: 20px;
+    animation: pop .25s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes pop { from { transform: translateY(12px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .panel.center .sheet { animation: none; } }
+  .about-text { margin: 0; font-size: 17px; line-height: 1.6; max-width: 60ch; }
+  .credits { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 16px; }
+  .credits dt { font-weight: 700; }
+  .credits dd { margin: 0; color: var(--haze); font-weight: 300; }
   .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   h2 { margin: 0; font: 700 40px/1.1 'Syne', sans-serif; letter-spacing: -0.02em; }
   .close {
@@ -205,7 +232,10 @@
 
     <div class="titles">
       <h1><span id="wordmark">dreamback</span></h1>
-      <p class="strap">Dreamy musical experiences</p>
+      <div class="strap-row">
+        <p class="strap">Dreamy musical experiences</p>
+        <button class="info" type="button" data-open="about" aria-haspopup="dialog" aria-label="About Dreamback"><span aria-hidden="true">i</span></button>
+      </div>
       <p class="place">Staffordshire · UK · Earth</p>
     </div>
 
@@ -235,6 +265,24 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
     <a class="outline" href="https://apple.co/3jLjqXM" target="_blank" rel="noopener">Open in Apple Music
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
+  </section>
+</div>
+
+<!-- About panel -->
+<div class="panel center" id="about" role="dialog" aria-modal="true" aria-labelledby="about-title" hidden>
+  <button class="scrim" type="button" data-close tabindex="-1" aria-label="Close About"></button>
+  <section class="sheet">
+    <div class="sheet-head">
+      <h2 id="about-title">About</h2>
+      <button class="close" type="button" data-close aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <p class="about-text">Dreamback is a sleep-deprived creative project from Staffordshire UK. Rich soundscapes, ambient reverberation, hazy vocals, fuzzy lead lines. Music inspired by nostalgia, romance, dreams, space, nature. Believing is seeing.</p>
+    <dl class="credits">
+      <dt>Jamie Duddy</dt><dd>music</dd>
+      <dt>Laura Duddy</dt><dd>voice</dd>
+    </dl>
   </section>
 </div>
 
