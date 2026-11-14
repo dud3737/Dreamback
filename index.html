@@ -160,6 +160,15 @@
     text-decoration: none; cursor: pointer;
   }
   .solid:hover { background: var(--milk); }
+  .outline {
+    min-height: 52px; padding: 0 22px; margin-top: -12px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 999px; border: 1.5px solid rgba(251, 246, 250, 0.7);
+    background: transparent; color: var(--milk);
+    font: 600 18px/1 'Syne', sans-serif;
+    text-decoration: none; cursor: pointer;
+  }
+  .outline:hover { background: rgba(251, 246, 250, 0.1); }
 
   form { display: flex; flex-direction: column; gap: 18px; }
   .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -223,6 +232,8 @@
     </div>
     <iframe class="player" title="Dreamback on Spotify" data-src="https://open.spotify.com/embed/artist/3WozefFZdeSm7JIakWVPVs?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     <a class="solid" href="https://open.spotify.com/artist/3WozefFZdeSm7JIakWVPVs" target="_blank" rel="noopener">Open in Spotify
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
+    <a class="outline" href="https://apple.co/3jLjqXM" target="_blank" rel="noopener">Open in Apple Music
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
   </section>
 </div>
