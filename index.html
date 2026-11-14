@@ -112,6 +112,10 @@
     text-shadow: 0 1px 14px rgba(42, 27, 51, 0.8);
   }
 
+  .copyright {
+    margin: 0; font-size: 13px; font-weight: 300; letter-spacing: 0.02em;
+    color: var(--haze); text-shadow: 0 1px 10px rgba(42, 27, 51, 0.8);
+  }
   nav { display: flex; flex-wrap: wrap; gap: 12px; max-width: 760px; }
   .pill {
     flex: 1 1 150px;
@@ -247,6 +251,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
       <button class="pill" type="button" data-open="contact" aria-haspopup="dialog">Contact</button>
     </nav>
+
+    <footer>
+      <p class="copyright">© Dreamback 2020–<span id="year">2026</span></p>
+    </footer>
   </div>
 </main>
 
@@ -336,6 +344,9 @@
   // (for example from Formspree, Basin or Netlify Forms). Left empty, the form
   // just shows the thank-you message so you can try the flow.
   var FORM_ENDPOINT = '';
+
+  // Keep the copyright year current.
+  document.getElementById('year').textContent = new Date().getFullYear();
 
   // Size the wordmark so it always fills the width without running off the page.
   function fitWordmark() {
