@@ -27,6 +27,7 @@
 
   *, *::before, *::after { box-sizing: border-box; }
   [hidden] { display: none !important; }
+  .grecaptcha-badge { visibility: hidden; }
   html, body { height: 100%; }
   body {
     margin: 0;
@@ -369,7 +370,8 @@
         <textarea id="message" name="message" rows="5" required></textarea>
       </div>
       <p class="form-error" id="form-error" role="alert" hidden></p>
-      <button class="solid" type="submit">Send message</button>
+      <button class="solid" type="submit" id="contact-submit">Send message</button>
+      <p class="fineprint">This form is protected by reCAPTCHA. Google’s <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color: inherit">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener" style="color: inherit">Terms of Service</a> apply.</p>
     </form>
 
     <div class="thanks" id="thanks" hidden>
@@ -384,6 +386,27 @@
   // (for example from Formspree, Basin or Netlify Forms). Left empty, the form
   // just shows the thank-you message so you can try the flow.
   var FORM_ENDPOINT = 'https://formspree.io/f/moedeqvd';
+  var RECAPTCHA_SITE_KEY = '6LfHZCEuAAAAACxWJCMEPj1m5nFFbn4RWfr4rrIR';
+
+  // reCAPTCHA v3 loads the first time the Contact panel opens.
+  var recaptchaLoading = null;
+  function loadRecaptcha() {
+    if (recaptchaLoading) return recaptchaLoading;
+    recaptchaLoading = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
+      s.async = true;
+      s.onload = function () { window.grecaptcha.ready(resolve); };
+      s.onerror = function () { recaptchaLoading = null; reject(new Error('reCAPTCHA failed to load')); };
+      document.head.appendChild(s);
+    });
+    return recaptchaLoading;
+  }
+  function getRecaptchaToken() {
+    return loadRecaptcha().then(function () {
+      return window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact' });
+    });
+  }
 
   // Keep the copyright year current.
   document.getElementById('year').textContent = new Date().getFullYear();
@@ -410,6 +433,7 @@
     var panel = document.getElementById(id);
     if (!panel) return;
     lastTrigger = trigger || null;
+    if (id === 'contact') loadRecaptcha().catch(function () {});
     var frame = panel.querySelector('iframe[data-src]');
     if (frame && !frame.src) frame.src = frame.getAttribute('data-src');
     panel.hidden = false;
@@ -516,14 +540,25 @@
 
     if (!FORM_ENDPOINT) { done(); return; }
 
-    fetch(FORM_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: new FormData(form)
+    var submit = document.getElementById('contact-submit');
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    function resetButton() { submit.disabled = false; submit.textContent = 'Send message'; }
+
+    getRecaptchaToken().then(function (token) {
+      var data = new FormData(form);
+      data.append('g-recaptcha-response', token);
+      return fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: data
+      });
     }).then(function (r) {
+      resetButton();
       if (r.ok) { done(); }
       else { throw new Error('Bad response'); }
     }).catch(function () {
+      resetButton();
       error.textContent = 'The message didn’t send. Check your connection and try again.';
       error.hidden = false;
     });
