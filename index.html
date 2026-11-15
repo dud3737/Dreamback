@@ -343,6 +343,7 @@
     </div>
 
     <form id="contact-form" novalidate>
+      <input type="hidden" name="_subject" value="New message from dreamback.co.uk">
       <div class="row">
         <div class="field">
           <label for="first-name">First name</label>
@@ -380,7 +381,7 @@
   // To make the form actually deliver messages, paste a form endpoint here
   // (for example from Formspree, Basin or Netlify Forms). Left empty, the form
   // just shows the thank-you message so you can try the flow.
-  var FORM_ENDPOINT = '';
+  var FORM_ENDPOINT = 'https://formspree.io/f/moedeqvd';
 
   // Keep the copyright year current.
   document.getElementById('year').textContent = new Date().getFullYear();
