@@ -116,7 +116,7 @@
     margin: 0; font-size: 13px; font-weight: 300; letter-spacing: 0.02em;
     color: var(--haze); text-shadow: 0 1px 10px rgba(42, 27, 51, 0.8);
   }
-  nav { display: flex; flex-wrap: wrap; gap: 12px; max-width: 760px; }
+  nav { display: flex; flex-wrap: wrap; gap: 12px; max-width: 920px; }
   .pill {
     flex: 1 1 150px;
     min-height: 52px; padding: 0 22px;
@@ -212,6 +212,8 @@
     font: inherit; font-size: 16px;
   }
   textarea { min-height: 132px; line-height: 1.5; resize: vertical; }
+  .fineprint { margin: -6px 0 0; font-size: 13px; font-weight: 300; color: var(--mist); }
+  .lede { margin: 0; font-size: 17px; line-height: 1.6; }
   .form-error { margin: 0; color: #FFC7D9; font-size: 14px; }
   .thanks { display: flex; flex-direction: column; gap: 20px; }
   .thanks p { margin: 0; font-size: 20px; line-height: 1.5; }
@@ -250,6 +252,7 @@
       <a class="pill" href="https://dreamback.bandcamp.com/" target="_blank" rel="noopener" aria-label="Consume, opens Bandcamp in a new tab">Consume
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
       <button class="pill" type="button" data-open="contact" aria-haspopup="dialog">Contact</button>
+      <button class="pill" type="button" data-open="join" aria-haspopup="dialog">Join</button>
     </nav>
 
     <footer>
@@ -291,6 +294,33 @@
       <dt>Jamie Duddy</dt><dd>music</dd>
       <dt>Laura Duddy</dt><dd>voice</dd>
     </dl>
+  </section>
+</div>
+
+<!-- Join panel -->
+<div class="panel" id="join" role="dialog" aria-modal="true" aria-labelledby="join-title" hidden>
+  <button class="scrim" type="button" data-close tabindex="-1" aria-label="Close Join"></button>
+  <section class="sheet">
+    <div class="sheet-head">
+      <h2 id="join-title">Join</h2>
+      <button class="close" type="button" data-close aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <p class="lede">Get new music and gig news from Dreamback by email.</p>
+    <form id="join-form" action="https://app.kit.com/forms/10191380/subscriptions" method="post" target="_blank" novalidate>
+      <div class="field">
+        <label for="join-email">Email</label>
+        <input id="join-email" name="email_address" type="email" autocomplete="email" required>
+      </div>
+      <p class="form-error" id="join-error" role="alert" hidden></p>
+      <button class="solid" type="submit" id="join-submit">Join the list</button>
+      <p class="fineprint">No spam. Unsubscribe any time.</p>
+    </form>
+    <div class="thanks" id="join-thanks" hidden>
+      <p tabindex="-1" id="join-thanks-msg">Nearly there. Check your email and tap the link to confirm.</p>
+      <button class="ghost" type="button" data-close>Back to home</button>
+    </div>
   </section>
 </div>
 
@@ -386,14 +416,60 @@
   }
 
   function resetForm() {
-    var form = document.getElementById('contact-form');
-    var thanks = document.getElementById('thanks');
-    if (thanks && !thanks.hidden) {
-      form.reset();
-      form.hidden = false;
-      thanks.hidden = true;
-    }
+    [['contact-form', 'thanks'], ['join-form', 'join-thanks']].forEach(function (pair) {
+      var form = document.getElementById(pair[0]);
+      var thanks = document.getElementById(pair[1]);
+      if (form && thanks && !thanks.hidden) {
+        form.reset();
+        form.hidden = false;
+        thanks.hidden = true;
+      }
+    });
   }
+
+  // Mailing list sign-up (Kit form 10191380).
+  document.getElementById('join-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var error = document.getElementById('join-error');
+    var submit = document.getElementById('join-submit');
+    var email = form.email_address;
+
+    if (!email.value.trim() || !email.checkValidity()) {
+      error.textContent = 'Enter your email address, like name@example.com.';
+      error.hidden = false; email.focus(); return;
+    }
+    error.hidden = true;
+    submit.disabled = true;
+    submit.textContent = 'Joining…';
+
+    function done() {
+      form.hidden = true;
+      document.getElementById('join-thanks').hidden = false;
+      document.getElementById('join-thanks-msg').focus();
+    }
+    function reset() { submit.disabled = false; submit.textContent = 'Join the list'; }
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (data) {
+        if (r.ok && (!data.status || data.status === 'success')) { reset(); done(); }
+        else {
+          reset();
+          error.textContent = 'That didn’t go through. Check the email address and try again.';
+          error.hidden = false;
+        }
+      });
+    }).catch(function () {
+      // If the browser blocks the background request, send it the normal way in a new tab.
+      reset();
+      HTMLFormElement.prototype.submit.call(form);
+      done();
+    });
+  });
 
   document.querySelectorAll('[data-open]').forEach(function (btn) {
     btn.addEventListener('click', function () { openPanel(btn.getAttribute('data-open'), btn); });
