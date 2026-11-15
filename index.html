@@ -131,6 +131,13 @@
     transition: background-color .2s ease, color .2s ease, border-color .2s ease;
   }
   .pill:hover { background: var(--haze); color: var(--plum); border-color: var(--haze); }
+  .pill.stack { flex-direction: column; gap: 3px; padding: 6px 22px; }
+  .pill small {
+    font: 400 12px/1.2 'DM Sans', system-ui, sans-serif;
+    letter-spacing: 0.01em; color: var(--haze);
+    transition: color .2s ease;
+  }
+  .pill:hover small { color: var(--plum); }
 
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
     outline: 2px solid var(--haze); outline-offset: 3px;
@@ -252,7 +259,7 @@
       <a class="pill" href="https://dreamback.bandcamp.com/" target="_blank" rel="noopener" aria-label="Consume, opens Bandcamp in a new tab">Consume
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
       <button class="pill" type="button" data-open="contact" aria-haspopup="dialog">Contact</button>
-      <button class="pill" type="button" data-open="join" aria-haspopup="dialog">Join</button>
+      <button class="pill stack" type="button" data-open="join" aria-haspopup="dialog">Join us<small>(come in alone)</small></button>
     </nav>
 
     <footer>
@@ -302,7 +309,7 @@
   <button class="scrim" type="button" data-close tabindex="-1" aria-label="Close Join"></button>
   <section class="sheet">
     <div class="sheet-head">
-      <h2 id="join-title">Join</h2>
+      <h2 id="join-title">Join us</h2>
       <button class="close" type="button" data-close aria-label="Close">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
       </button>
